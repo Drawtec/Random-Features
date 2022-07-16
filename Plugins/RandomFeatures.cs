@@ -1217,7 +1217,7 @@ namespace Random_Features
                     ImageSize = Settings.AtziriMirrorSize,
                     YOffset = -90
             };
-            DrawImageToWorld(wantedEntity);
+            DrawImageToWorld_Monsters(wantedEntity);
         }
 
         private void RenderLieutenantSkeletonThorns()
@@ -1238,7 +1238,7 @@ namespace Random_Features
                     ImageSize = Settings.LieutenantofRageSize,
                     YOffset = -90
             };
-            DrawImageToWorld(wantedEntity);
+            DrawImageToWorld_Monsters(wantedEntity);
         }
         
         public LargeMapData LargeMapInformation { get; set; }
@@ -1422,14 +1422,18 @@ namespace Random_Features
             }
         }
 
-        public void DrawImageToWorld(ImageToWorldData information)
+        public void DrawImageToWorld_Monsters(ImageToWorldData information)
         {
             foreach (Entity validEntity in GameController.EntityListWrapper.OnlyValidEntities)
             {
                 foreach (var wantedPath in information.Path)
                 {
-                    if (validEntity.Path.Contains(wantedPath))
+                    if (validEntity.Path.Contains(wantedPath) && validEntity.HasComponent<Monster>())
                     {
+                        if (validEntity == null)
+                        {
+                            return;
+                        }
                         var camera = GameController.Game.IngameState.Camera;
                         var chestScreenCoords = camera.WorldToScreen(validEntity.Pos.Translate(0, 0, information.YOffset));
                         var iconRect = new RectangleF(chestScreenCoords.X - information.ImageSize / 2,
